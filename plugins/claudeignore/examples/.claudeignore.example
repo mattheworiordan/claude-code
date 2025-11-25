@@ -1,0 +1,31 @@
+# .claudeignore Example - Un-ignore gitignored files
+# =====================================================
+# This file uses gitignore syntax to control which files Claude can access.
+# The PRIMARY use case is using negation patterns (!) to un-ignore files.
+
+# Un-ignore local development files that are useful for Claude
+!.env.example
+!.env.template
+!.env.development.example
+!TODO.md
+!NOTES.md
+!*.local.md
+
+# Un-ignore documentation (might be gitignored in some projects)
+!docs/
+!*.md
+!README*.md
+
+# Un-ignore specific configuration examples
+!config/database.example.yml
+!config/api.example.json
+
+# You can also ADD extra blocking for security
+# (These would block files even if they're NOT in .gitignore)
+.env
+.env.production
+.env.staging
+*.key
+*.pem
+credentials.json
+secrets.yaml

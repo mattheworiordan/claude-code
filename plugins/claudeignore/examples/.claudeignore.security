@@ -1,0 +1,72 @@
+# .claudeignore Security-Focused Example
+# ========================================
+# Use this to add extra security beyond .gitignore
+
+# Environment files (block all except examples)
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Credentials and keys
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+*.der
+*_rsa
+*_dsa
+*_ed25519
+*_ecdsa
+credentials.json
+credentials.yml
+credentials.yaml
+secrets.json
+secrets.yml
+secrets.yaml
+keyfile.json
+
+# AWS credentials
+.aws/
+aws-credentials.json
+
+# Google Cloud credentials
+gcloud-key.json
+service-account*.json
+
+# SSH keys
+.ssh/id_*
+.ssh/*_key
+
+# Configuration files that might contain secrets
+config/production.yaml
+config/production.json
+config/staging.yaml
+config/staging.json
+config/database.yml
+!config/database.example.yml
+
+# Database dumps
+*.sql
+*.dump
+*.backup
+
+# Build artifacts that might contain embedded secrets
+dist/
+build/
+.next/
+out/
+
+# Terraform state files (can contain sensitive data)
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+
+# Docker compose files with credentials
+docker-compose.prod.yml
+docker-compose.production.yml
+
+# CI/CD configuration (might have tokens)
+.github/workflows/*-deploy.yml

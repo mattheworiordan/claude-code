@@ -1,0 +1,9 @@
+{
+  "name": "claudeignore",
+  "version": "1.0.0",
+  "description": "Control Claude Code file access using .claudeignore files. Use negation patterns (!) to un-ignore gitignored files, or add extra security by blocking sensitive files. Zero overhead when not in use - only activates in projects with .claudeignore files.",
+  "author": {
+    "name": "Matthew O'Riordan",
+    "email": "matt@ably.io"
+  }
+}
