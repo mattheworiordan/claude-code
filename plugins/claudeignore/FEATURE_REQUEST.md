@@ -61,6 +61,106 @@ These are gitignored because they're personal/private and shouldn't be in versio
 
 This would expose only specific directories in this one project, without affecting global settings or other projects.
 
+## Use Case Example: Step-by-Step
+
+**Scenario**: I maintain a personal "second brain" repository for notes, tasks, and knowledge management. I use Claude Code to help me organize, search, and work with this content.
+
+### My Repository Structure
+
+```
+matt-os/
+├── .git/
+├── .gitignore          # Contains: tasks/, journal/, me/private/, work/, personal/
+├── me/
+│   ├── profile.md      # Public - checked into git
+│   ├── goals.md        # Public
+│   └── private/        # GITIGNORED - personal notes
+│       ├── health.md
+│       └── finances.md
+├── tasks/              # GITIGNORED - my todo lists
+│   ├── today.md
+│   ├── work.md
+│   └── personal.md
+├── journal/            # GITIGNORED - daily notes
+│   ├── 2025-01-15.md
+│   └── 2025-01-16.md
+└── docs/               # Public documentation
+    └── README.md
+```
+
+### Step 1: I Open Claude Code in My Repo
+
+```bash
+cd ~/Projects/matt-os
+claude
+```
+
+### Step 2: I Want to Reference Today's Tasks
+
+I type `@tasks` hoping to autocomplete to `tasks/today.md`.
+
+**What happens now**: Nothing appears. The `tasks/` directory is gitignored, so Claude Code's file picker ignores it entirely.
+
+**What I want**: `tasks/today.md`, `tasks/work.md`, etc. should appear in autocomplete.
+
+### Step 3: The Current Workaround is Painful
+
+To use the official solution, I would need to:
+
+1. Run `/config` and disable "Respect .gitignore in file picker" **globally**
+2. Now **every project** I work on exposes all gitignored files (including `.env` files with API keys!)
+3. Go to **every other project** and create a `.ignore` file to re-block sensitive files
+4. Remember to do this for every new project I clone or create
+
+This is completely impractical for someone who works across dozens of repositories.
+
+### Step 4: What I Actually Want
+
+Create a `.claudeinclude` or `.claude/settings.json` in just this one repo:
+
+```json
+{
+  "includeGitIgnored": [
+    "tasks/",
+    "journal/",
+    "me/private/"
+  ]
+}
+```
+
+Now when I type `@tasks`, I see my task files. When I type `@journal`, I see my journal entries. **Only in this repo. No global settings changed. No security risk in other projects.**
+
+### Step 5: Working with Claude on Private Content
+
+With the feature working, my workflow becomes:
+
+```
+> @tasks/today.md what's my top priority today?
+
+Claude: Looking at your tasks/today.md, your top priority is...
+
+> Move the "Review PR #123" task from @tasks/work.md to @tasks/today.md
+
+Claude: I'll move that task for you...
+```
+
+This is the natural workflow that gitignored files currently break.
+
+### Why This Can't Be Solved with Plugins
+
+I built a [claudeignore plugin](./README.md) that successfully filters tool access using `PreToolUse` hooks. The plugin works perfectly for blocking/allowing Read/Write/Edit operations.
+
+**But it cannot affect `@` autocomplete** because:
+- The autocomplete is implemented in Claude Code's core Rust fuzzy finder
+- No plugin hooks exist for autocomplete customization
+- The plugin only intercepts tool execution, not the UI file picker
+
+So even with my plugin installed and configured with `!tasks/`:
+- Typing `@tasks` shows nothing (autocomplete still ignores it)
+- Manually typing "read tasks/today.md" works (plugin allows the tool call)
+
+**The UX is broken** - users can't discover files, they must already know the exact paths.
+
 ## Plugin Attempt: claudeignore
 
 I built a [claudeignore plugin](./README.md) to solve this using PreToolUse hooks. The plugin:
